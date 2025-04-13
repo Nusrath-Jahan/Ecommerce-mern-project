@@ -4,18 +4,21 @@ const app = express();
 
 
 app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const isLoggedIn = (req, res, next) => {
- const login = false;
+ const login = true;
  if(login){
+  req.body.id = 101;
   next();
  }else{
   return res.status(401).json({ message: 'Please login first'});
  }
-  next();
+  
 };
 
-app.use(isLoggedIn);
+
 
 app.get("/test", (req, res) => {
     res.status(200).send({
@@ -24,6 +27,7 @@ app.get("/test", (req, res) => {
 });
 
 app.get("/api/user", isLoggedIn,(req, res) => {
+  console.log(req.body.id);
   res.status(200).send({
       message: "User profile is returned"
     })
